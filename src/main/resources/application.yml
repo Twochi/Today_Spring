@@ -1,0 +1,12 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://221.133.141.227:3306/today?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: today
+    password: 1234
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
