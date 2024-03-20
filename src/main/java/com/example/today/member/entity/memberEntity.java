@@ -22,17 +22,22 @@ public class memberEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "")
     private Long memberCode;
 
-    @Column
+    @Column(name = "MEMBER_EMAIL")
     private String memberEmail;
 
+    @Column(name = "MEMBER_ID")
     private String memberId;
 
+    @Column(name = "MEMBER_PWD")
     private String memberPwd;
 
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
 
+    @Column(name = "MEMBER_PHOTO")
     private String memberPhoto;
 
+    @Column(name = "MEMBER_NAME")
     private String memberName;
 }
 

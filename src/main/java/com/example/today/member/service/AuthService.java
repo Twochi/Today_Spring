@@ -1,5 +1,6 @@
 package com.example.today.member.service;
 
+import com.example.today.common.RedisUtil;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Random;
 public class AuthService {
 
     private final JavaMailSender mailSender;
+
+    private final RedisUtil redisUtil;
     private int authNumber;
 
     //임의의 6자리 양수를 반환합니다.
@@ -51,6 +54,7 @@ public class AuthService {
                         "</div>" +
                         "</div>";
         mailSend(setFrom, toMail, title, content);
+
         return Integer.toString(authNumber);
 
     }
@@ -70,6 +74,21 @@ public class AuthService {
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
 
+        redisUtil.setDataExpire(Integer.toString(authNumber),toMail,60*5L);
 
+
+    }
+
+    public Boolean checkAuthNum(String email,String authNum) {
+
+        if(redisUtil.getData(authNum)==null){
+            return false;
+        }
+        else if(redisUtil.getData(authNum).equals(email)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

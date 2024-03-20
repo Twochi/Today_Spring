@@ -4,6 +4,9 @@ package com.example.today.member.dto;
 import jakarta.validation.constraints.Email;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.mail.Multipart;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,9 +26,9 @@ public class MemberDTO {
 
     private String phoneNumber;
 
-    private String memberPhoto;
-
     private String memberName;
+
+    private String gender;
 
 
 }
