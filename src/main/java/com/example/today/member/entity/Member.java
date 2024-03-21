@@ -9,17 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "member")
 @Entity
-@SequenceGenerator(
-        name = "MEMBER_CODE_GENERATOR",
-        sequenceName = "SEQ_TBL_MEMBER_MEMBER_CODE",
-        initialValue = 1,
-        allocationSize = 1
-)
-public class memberEntity {
+public class Member {
 
     @Id
     @Column(name = "MEMBER_CODE")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberCode;
 
     @Column(name = "MEMBER_EMAIL")
@@ -39,5 +33,8 @@ public class memberEntity {
 
     @Column(name = "MEMBER_NAME")
     private String memberName;
+
+    @Column(name = "MEMBER_GENDER")
+    private String gender;
 }
 

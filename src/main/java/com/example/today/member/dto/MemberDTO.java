@@ -30,5 +30,8 @@ public class MemberDTO {
 
     private String gender;
 
+    private String userSecretKey;
+
+    private MultipartFile memberPhoto;
 
 }

@@ -54,12 +54,26 @@ public class AuthController {
                         .build());
     }
 
+    // 회원가입
     @PostMapping("/signUp")
     public ResponseEntity<ResponseDTO> signUp(@ModelAttribute MemberDTO memberDTO ,
                                                 @RequestParam("memberPhoto") MultipartFile memberPhoto) {
 
         System.out.println(memberDTO);
+
+
+        try {
+            authService.signUp(memberDTO , memberPhoto);
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(memberDTO);
         System.out.println(memberPhoto);
+
+
 
         return ResponseEntity.ok()
                 .body(ResponseDTO.builder()

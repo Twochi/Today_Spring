@@ -1,16 +1,26 @@
 package com.example.today.member.service;
 
 import com.example.today.common.RedisUtil;
+import com.example.today.member.dto.MemberDTO;
+import com.example.today.member.entity.Member;
+import com.example.today.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +29,16 @@ public class AuthService {
     private final JavaMailSender mailSender;
 
     private final RedisUtil redisUtil;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final ModelMapper modelMapper;
+
+    private final MemberRepository memberRepository;
     private int authNumber;
+
+
+
 
     //임의의 6자리 양수를 반환합니다.
     public void makeRandomNumber() {
@@ -30,6 +49,14 @@ public class AuthService {
         }
 
         authNumber = Integer.parseInt(randomNumber);
+    }
+
+    // 랜덤한 JWT SecretKey 생성
+    private static byte[] generateRandomBytes(int length) throws NoSuchAlgorithmException {
+        SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+        byte[] randomBytes = new byte[length];
+        secureRandom.nextBytes(randomBytes);
+        return randomBytes;
     }
 
 
@@ -90,5 +117,40 @@ public class AuthService {
         else{
             return false;
         }
+    }
+
+    @Transactional
+    public void signUp(MemberDTO memberDTO, MultipartFile memberPhoto) throws Exception {
+
+        int keyLength = 64;
+
+        String imageName = UUID.randomUUID().toString().replace("-", "");
+
+        // 안전한 랜덤 바이트 생성
+        byte[] keyBytes = generateRandomBytes(keyLength);
+
+        // Base64로 인코딩하여 JWT 시크릿 키 생성
+        String jwtKey = Base64.getEncoder().encodeToString(keyBytes);
+
+        memberDTO.setUserSecretKey(jwtKey);
+
+
+        if(memberDTO.getGender().equals("female")) {
+
+            memberDTO.setGender("F");
+        } else if(memberDTO.getGender().equals("male")) {
+
+            memberDTO.setGender("M");
+        }
+
+        memberDTO.setMemberPhoto(memberPhoto);
+
+        memberDTO.setMemberPwd(passwordEncoder.encode(memberDTO.getMemberPwd())); // 비밀번호 인코딩
+
+        Member member = modelMapper.map(memberDTO, Member.class);
+
+        memberRepository.save(member);
+
+
     }
 }
