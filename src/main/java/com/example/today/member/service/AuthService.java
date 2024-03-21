@@ -4,9 +4,11 @@ import com.example.today.common.RedisUtil;
 import com.example.today.member.dto.MemberDTO;
 import com.example.today.member.entity.Member;
 import com.example.today.member.repository.MemberRepository;
+import com.example.today.util.FileUploadUtils;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +39,10 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private int authNumber;
 
-
+    @Value("${image.image-dir}")
+    private String IMAGE_DIR;
+    @Value("${image.image-url}")
+    private String IMAGE_URL;
 
 
     //임의의 6자리 양수를 반환합니다.
@@ -124,8 +129,6 @@ public class AuthService {
 
         int keyLength = 64;
 
-        String imageName = UUID.randomUUID().toString().replace("-", "");
-
         // 안전한 랜덤 바이트 생성
         byte[] keyBytes = generateRandomBytes(keyLength);
 
@@ -143,7 +146,13 @@ public class AuthService {
             memberDTO.setGender("M");
         }
 
-        memberDTO.setMemberPhoto(memberPhoto);
+        // 이미지 저장
+        String imageName = UUID.randomUUID().toString().replace("-", "");
+
+        String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, memberPhoto);
+
+
+        memberDTO.setUserImg(replaceFileName);
 
         memberDTO.setMemberPwd(passwordEncoder.encode(memberDTO.getMemberPwd())); // 비밀번호 인코딩
 

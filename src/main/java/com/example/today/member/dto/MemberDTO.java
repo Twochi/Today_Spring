@@ -32,6 +32,6 @@ public class MemberDTO {
 
     private String userSecretKey;
 
-    private MultipartFile memberPhoto;
+    private String userImg;
 
 }

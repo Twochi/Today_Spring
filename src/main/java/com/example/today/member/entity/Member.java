@@ -29,7 +29,7 @@ public class Member {
     private String phoneNumber;
 
     @Column(name = "MEMBER_PHOTO")
-    private String memberPhoto;
+    private String userImg;
 
     @Column(name = "MEMBER_NAME")
     private String memberName;

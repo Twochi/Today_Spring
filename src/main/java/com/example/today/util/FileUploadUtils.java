@@ -21,6 +21,8 @@ public class FileUploadUtils {
 
         Path uploadPath = Paths.get(uploadDir);
 
+        System.out.println("경로" + uploadPath);
+
         if(!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
